@@ -21,6 +21,9 @@ namespace AgentFire\Plugin;
 
 define( 'AGENTFIRE_TEST_PATH', plugin_dir_path( __FILE__ ) );
 
+define( 'AGENTFIRE_TEST_URI', plugin_dir_url( __FILE__ ) );
+
+
 require AGENTFIRE_TEST_PATH . 'vendor/autoload.php';
 
 add_action( 'plugins_loaded', function() {
