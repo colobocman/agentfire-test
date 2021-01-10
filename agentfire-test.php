@@ -12,7 +12,7 @@
  * Description: Area Test plugin
  * Plugin URI: https://agentfire.com
  * Version: 1.0.0
- * Author: Author Name
+ * Author: Roman Prokopyshyn
  * License: Proprietary
  * Network: false
  */
