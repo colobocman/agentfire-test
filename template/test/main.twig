@@ -1,17 +1,101 @@
-<div class="container-fluid">
-<section id="test-plugin" class="container-fluid row" style="background-color: #e1e1e1; ">
-<aside id="test-sidebar"  class="col-md-1">
-<section id="test-search">
-<h1>hello hellohellohellohello</h1>
-<h1>hello hello</h1>
-</section>
-<section id="test-markers">
-</section>
-</aside>
-<main>
-<section id="test-map">
+<div class="container-fluid" style="width: 100vw;max-width: 100vw;">
+	<section id="test-plugin" class="container-fluid row" style="">
+		<aside id="test-sidebar"  class="col-md-2">
+			<section id="test-search"  style="padding: 20px">
+				<select class="js-example-placeholder-single js-states form-control">
+				<option></option>
+				</select>
+			</section>
+			<section id="test-markers"  style="padding: 20px">
+				{% for tag in tags %}
+				<div class="checkbox">
+					<label><input type="checkbox" name="tags[]" value="{{ tag.term_id }}" /> {{ tag.name }} </label>
+				</div>
+				{% endfor %}
+			</section>
+		</aside>
+		<main class="col-md-10">
+			<section id="test-map">
+				<div id='map' style='width: 100%; height: 400px;'></div>
+				<script>
+					mapboxgl.accessToken = "{{ mapbox_api_key }}";
+					var map = new mapboxgl.Map({
+						container: 'map',
+						style: 'mapbox://styles/mapbox/streets-v11', 
+						center: [-74.5, 40],
+						zoom: 4
+					});
 
-</section>
-</main>
-</section>
+					data = {{ geo_data|raw }}
+
+					map.on('load', function () {
+						 map.addSource("markers", {
+					        "type": "geojson",
+					        "data": data
+					    });
+
+					    map.addLayer({
+					        "id": "markers",
+					        "interactive": true,
+					        "type": "symbol",
+					        "source": "markers",
+					        "layout": {
+					            "icon-image": "marker-15",
+					            "icon-size": 1.25
+					        },
+					        "paint": {
+					            /*"text-size": 10,*/
+					        }
+					    });
+
+						console.log(data);
+
+						map.on('click', function(e) {
+							// if (AgentFireTest.current_user.lenght > 0 ) {
+								jQuery('#add_marker_form input[name ="lat"]').val(e.lngLat.lat);
+								jQuery('#add_marker_form input[name ="lng"]').val(e.lngLat.lng);
+								jQuery('#add_marker_modal').modal('show');
+								console.log('A click event has occurred at ' + e.lngLat.lng + "  " + e.lngLat.lat);
+							// }
+						});
+					});
+
+				</script>
+			</section>
+		</main>
+	</section>
+</div>
+
+<div class="modal fade" id="add_marker_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form id="add_marker_form" class="add_marker">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">New Marker</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Marker Name:</label>
+						<input type="text" class="form-control" name="name">
+					</div>
+					<div class="form-group">
+						{% for tag in tags %}
+						<div class="checkbox">
+							<label><input type="checkbox" name="tags[]" value="{{ tag.slug }}" /> {{ tag.name }} </label>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+				<input type="hidden" name="lat" value="0">
+				<input type="hidden" name="lng" value="0">
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Add Marker</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
