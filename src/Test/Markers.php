@@ -81,7 +81,7 @@ class Markers {
 			$data[] = array(
 				"type"=> "Feature",
 				"geometry"=> array (
-					"coordinates"=> array ((double)$lat, (double)$lng),
+					"coordinates"=> array ((double)$lng, (double)$lat),
 					"type" => "Point"
 				),
 				"properties" => $properties,

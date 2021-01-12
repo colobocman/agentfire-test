@@ -31,3 +31,26 @@ add_marker_form.onsubmit = async (form) => {
 	jQuery('#add_marker_modal').modal('hide');
 
 };
+
+function filter(checked) {
+	 markers.setFilter(function(f) {
+        // If the data-filter attribute is set to "all", return
+        // all (true). Otherwise, filter on markers that have
+        let result = false;
+        checked.forEach(function(element) {
+        	if (f.properties[element] === true) result = true;
+        });
+        return result;
+        // a value set to true based on the filter name.
+    });
+}
+
+jQuery('input.tags-filter').on('click', function() {
+	let checked = [];
+
+	jQuery('#test-markers input.tags-filter:checkbox:checked').each(function(e) {
+		checked.push(jQuery(this).val());
+	});
+
+	filter(checked);
+});
