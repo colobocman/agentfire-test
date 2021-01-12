@@ -2,9 +2,9 @@
 	<section id="test-plugin" class="container-fluid row" style="">
 		<aside id="test-sidebar"  class="col-md-2">
 			<section id="test-search"  style="padding: 20px">
-				<select class="js-example-placeholder-single js-states form-control">
+				{# <select class="js-example-placeholder-single js-states form-control">
 				<option></option>
-				</select>
+				</select> #}
 			</section>
 			<section id="test-markers"  style="padding: 20px">
 				{% for tag in tags %}
@@ -18,31 +18,7 @@
 			<section id="test-map">
 				<div id='map' style='width: 100%; height: 400px;'></div>
 				<script>
-				L.mapbox.accessToken = "{{ mapbox_api_key }}";
-				var geojson = {{ geo_data|raw }};
-
-				// L.mapbox.map('map')
-				// 	.on('click', function(e) {
-				// 			console.log(e.latlng);
-
-				// 			if (AgentFireTest.current_user !== '' ) {
-				// 				console.log(AgentFireTest.current_user);
-				// 				jQuery('#add_marker_form input[name ="lat"]').val(e.latlng.lat);
-				// 				jQuery('#add_marker_form input[name ="lng"]').val(e.latlng.lng);
-				// 				jQuery('#add_marker_modal').modal('show');
-				// 			// 	console.log('A click event has occurred at ' + e.lngLat.lng + "  " + e.lngLat.lat);
-				// 			}
-				// 		})
-				// 	.setView([37.8, -96], 4)
-				// 	.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
-				var map = L.mapbox.map('map')
-				    .setView([42.68, -95.63], 4)
-				    .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
-
-				var markers = L.mapbox.featureLayer()
-					.setGeoJSON(geojson)
-					.addTo(map);
-
+					L.mapbox.accessToken = "{{ mapbox_api_key }}";
 				</script>
 				
 			</section>

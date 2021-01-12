@@ -7,9 +7,11 @@ namespace AgentFire\Plugin\Test;
  * @package AgentFire\Plugin
  */
 class Markers { 
-	function __construct() {
-	}
 
+	/**
+	* Get all markers tags
+	* @return array of objects WP_Term
+	*/
 	public static function get_marker_tags() {
 		$terms = get_terms( [
 			'taxonomy' => 'post_tag',
@@ -19,6 +21,16 @@ class Markers {
 		return $terms;
 	}
 
+	/**
+	* Add marker
+	* 	@param string $marker_name
+	* 	@param string $lat
+	* 	@param string $lng
+	* 	@param string $tags
+	* 	@param string $user
+	* 
+	* @return true or WP_Error
+	*/
 	public static function add_marker( $marker_name, $lat, $lng, $tags, $user ) {
 		$postarr = array(
 			"post_author" => $user,
@@ -31,14 +43,26 @@ class Markers {
 			return $marker_id;
 		}
 
+		//set marker map position
 		update_field('lat', $lat, $marker_id);
 		update_field('lon', $lng, $marker_id);
-
+		// update marker tags
 		wp_set_object_terms( $marker_id, $tags, 'marker_tag');
 
 		return true;
 	}
 
+
+	/**
+	* Add marker
+	* 	@param string $marker_name
+	* 	@param string $lat
+	* 	@param string $lng
+	* 	@param string $tags
+	* 	@param string $user
+	* 
+	* @return true or WP_Error
+	*/
 	public static function get_all_markers_as_geojson() {
 
 		$data = array();
@@ -54,6 +78,7 @@ class Markers {
 			$lat = get_field('lat');
 			$lng = get_field('lon');
 
+			//different color for marker author and others
 			if( is_user_logged_in() && is_author(get_current_user_id()) ) {
 				$marker_color = "#ff8888";
 			} else {
@@ -64,6 +89,7 @@ class Markers {
 				"title"=> $name,
 		        "marker-color" => $marker_color,
 		    );
+
 		    $date = get_the_date('Y-m-d H:i:s');
 		    $properties['description'] = $date;
 
@@ -75,7 +101,6 @@ class Markers {
 					$tag_names[] = $tag->name; 
 				}
 				$properties['description'] .=  "<br><i>".implode( ', ', $tag_names ).'</i>';
-
 			}
 
 			$data[] = array(
@@ -92,6 +117,6 @@ class Markers {
 			"features" => $data
 		);
 
-		return json_encode($result);
+		return $result;
 	}
 }

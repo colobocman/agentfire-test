@@ -11,25 +11,28 @@ use AgentFire\Plugin\Test\Markers;
  * @package AgentFire\Plugin
  */
 class Test {
+
 	function __construct() {
 		$this->init();
 	}
 
+	/** 
+	* Initialization
+	*
+	*/
 	function init() {
-
 		//add bootstrap and select2
 		add_action( 'wp_enqueue_scripts', array('\AgentFire\Plugin\Test','load_scripts_and_styles'));
-
 		//add shortcode 
 		add_shortcode( 'agentfire_test', array('\AgentFire\Plugin\Test','display_shortcode'));
-
 		add_action( 'init', array('\AgentFire\Plugin\Test','add_markers_cpt'), 0 );
-
 		self::add_acf_options();
-
 		\AgentFire\Plugin\Test\RestAPI::register_endpoints();
 	}
 
+	/** 
+	* Load all scripts and styles
+	*/
 	public static function load_scripts_and_styles() {
 		wp_register_script( 'bootstrap', AGENTFIRE_TEST_URI.'/bower_components/bootstrap/dist/js/bootstrap.min.js', array( 'jquery' ));
 		wp_enqueue_script('bootstrap');
@@ -51,30 +54,26 @@ class Test {
 
 		wp_localize_script('agentfire-test', 'AgentFireTest', [
 			'nonce' => wp_create_nonce('add_marker:'.get_current_user_id()),
-			'current_user' => self::get_current_user_name()
+			'current_user' => Test\Auth::get_current_user_name()
 		]);
 		
 	}
 
-
+	/** 
+	* Show shortcode content 
+	*/
 	public static function display_shortcode() { 
-		$tags = \AgentFire\Plugin\Test\Markers::get_marker_tags();
+		$tags = Markers::get_marker_tags();
+		$all_markers = json_encode(Markers::get_all_markers_as_geojson());
 		$test = Template::getInstance()->display( 'main.twig', 
 			[
 				'mapbox_api_key' 	=> get_field( 'mapbox_api_key','option' ),
 				'tags'				=> $tags, 
-				'geo_data'			=> Markers::get_all_markers_as_geojson()
+				'geo_data'			=> $all_markers
 			]);
 	}
 
-	private static function get_current_user_name () {
-		if ( is_user_logged_in() ) {
-			$current_user = wp_get_current_user();
-			return $current_user->user_login;
-		} else {
-			return "";
-		}
-	}
+
 
 
 	public static function add_acf_options() {
@@ -294,8 +293,5 @@ class Test {
 			'show_tagcloud'              => true,
 		);
 		register_taxonomy( 'marker_tag', array( 'markers' ), $args );
-
 	}
-
-
 }

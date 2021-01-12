@@ -8,40 +8,48 @@ namespace AgentFire\Plugin\Test;
  */
 class RestAPI { 
 
+	/**
+	* Add endpoints for add marker
+	*/
 	public static function register_endpoints()
 	{
 		add_action( 'rest_api_init', function () {
 			register_rest_route( 'agentfire-test/v1', 'marker',array(
 				'methods'  => 'POST',
 				'callback' => __CLASS__.'::add_marker',
-				// 'permission_callback' => function() {
-				// 	return current_user_can('edit_posts');
-				// }
+			));
+			register_rest_route( 'agentfire-test/v1', 'markers',array(
+				'methods'  => 'GET',
+				'callback' => __CLASS__.'::get_markers',
 			));
 		} );
 	}
 
-
-	/**
-	* Add marker REST API endpoind handler
-	* @WP_REST_Request $request - request data
+	/** 	
+	* Add marker endpoint handler
+	* 	@param WP_REST_Request $request
+	* 
+	* @return WP_REST_Response 
 	*/
 	public static function add_marker( \WP_REST_Request $request ) {
 		$body = $request->get_body();
 		$body_parsed = json_decode( $body, $associative = true );
 
+		// Check  and extraxt data from json
 		if ( is_null( $body_parsed )) {
 			return self::REST_error_response('Error parsing request body');
 		} 
 
+		// User simple validation
 		$user = $body_parsed['username'];
-		$user_ID = self::get_user_ID($user);
+		$user_ID = Auth::get_user_ID($user);
 		if (is_wp_error( $user_ID)) {
 			return self::REST_error_response($user_ID->get_error_message());
 		} 
 
+		// Check WP nonce and user auth
 		$nonce = $body_parsed['nonce'];
-		if ( self::check_nonce($nonce, $user_ID) == false ) {
+		if ( Auth::check_nonce($nonce, $user_ID) == false ) {
 			return self::REST_error_response("Nonce isn\'t valid");
 		}
 
@@ -51,7 +59,6 @@ class RestAPI {
 		$tags = $body_parsed['tags'];
 		$user = $user_ID;
 
-
 		$marker_added = Markers::add_marker($marker_name, $lat, $lng, $tags, $user);
 		if (is_wp_error( $marker_added)) {
 			return self::REST_error_response($marker_added->get_error_message());
@@ -60,29 +67,16 @@ class RestAPI {
 		}
 	}
 
-	private static function get_user_ID( $user_name ) {
-		$user = get_user_by( 'login', $user_name );
-		if (!$user) {
-			return new \WP_Error( 'unknown-user', 'Unknown user:'.$user_name );
-		} else {
-			return $user->ID;
-		}
+	public static function get_markers() {
+		$data = Markers::get_all_markers_as_geojson();
 
-	}
-
-	private static function check_nonce( $nonce, $user) {
-		// echo ('nonce action____'.'add_marker:'.$user);
-		$check_nonce = wp_verify_nonce( $nonce, 'add_marker:'.$user);
-		if( $check_nonce == false ) {
-			return true;
-		} else {
-			return false;
-		}
+		return new \WP_REST_Response( $data );
 	}
 
 	/**
 	* Generate REST API error response
-	* @string $message - text of error
+	* @param string $message - text of error
+	* @return WP_REST_Response 
 	*/
 	public static function REST_error_response($message) 
 	{
@@ -97,7 +91,8 @@ class RestAPI {
 
 	/**
 	* Generate REST API success response
-	* @string $message - text of success message
+	* @param string $message - text of success message
+	* @return WP_REST_Response 
 	*/
 	public static function REST_success_response($message) 
 	{
