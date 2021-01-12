@@ -42,9 +42,9 @@ class Test {
 		wp_enqueue_style( 'select2' );
 
 
-		wp_register_script( 'mapbox-js', 'https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js');
+		wp_register_script( 'mapbox-js', 'https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js');
 		wp_enqueue_script( 'mapbox-js');
-		wp_register_style( 'mapbox-css', 'https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css');
+		wp_register_style( 'mapbox-css', 'https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css');
 		wp_enqueue_style( 'mapbox-css' );
 
 		wp_enqueue_script('agentfire-test', AGENTFIRE_TEST_URI . 'dist/js/main.js', ['jquery'], NULL, TRUE);

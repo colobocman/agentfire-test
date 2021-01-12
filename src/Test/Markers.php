@@ -54,7 +54,11 @@ class Markers {
 			$lat = get_field('lat');
 			$lng = get_field('lon');
 
-			$properties = array("title"=> $name);
+			$properties = array(
+				"title"=> $name,
+			    "marker-symbol" => "star",
+		        "marker-color" => "#ff8888",
+		    );
 			$tags = get_the_terms( get_the_ID(), 'marker_tag');
 			if ((!is_wp_error( $tags )) and ($tags !== false)) { 
 				foreach ($tags as $tag) {
