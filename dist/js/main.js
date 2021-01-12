@@ -26,7 +26,8 @@ add_marker_form.onsubmit = async (form) => {
 	});
 	// let result = await response.json();
 	let result = await response.json();
-
 	console.log(result.message);
+
+	jQuery('#add_marker_modal').modal('hide');
 
 };
