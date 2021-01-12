@@ -73,9 +73,9 @@ class Test {
 			]);
 	}
 
-
-
-
+	/** 
+	* Add acf fields, and option pages
+	*/
 	public static function add_acf_options() {
 
 		if( function_exists('acf_add_options_page') ) {
@@ -205,7 +205,9 @@ class Test {
 
 	}
 
-	// Register Custom Post Type
+	/** 
+	* Add Markers and Tags
+	*/
 	public static function add_markers_cpt() {
 
 		$labels = array(

@@ -52,7 +52,6 @@ class Markers {
 		return true;
 	}
 
-
 	/**
 	* Add marker
 	* 	@param string $marker_name

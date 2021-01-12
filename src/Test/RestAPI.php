@@ -9,7 +9,7 @@ namespace AgentFire\Plugin\Test;
 class RestAPI { 
 
 	/**
-	* Add endpoints for add marker
+	* Add endpoints for add marker and load markers
 	*/
 	public static function register_endpoints()
 	{
@@ -67,6 +67,10 @@ class RestAPI {
 		}
 	}
 
+	/**
+	* Get all markers in Geo JSON
+	* @return WP_REST_Response 
+	*/
 	public static function get_markers() {
 		$data = Markers::get_all_markers_as_geojson();
 
